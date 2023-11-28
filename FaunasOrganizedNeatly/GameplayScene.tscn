@@ -1,0 +1,166 @@
+[gd_scene load_steps=14 format=3 uid="uid://cx6inxih0fv7b"]
+
+[ext_resource type="Texture2D" uid="uid://5kw5u2yrnslb" path="res://Assets/placeholder/Grid.png" id="1_55sjd"]
+[ext_resource type="Script" path="res://Scripts/GameManager.gd" id="1_mkdt3"]
+[ext_resource type="Script" path="res://Scripts/Grid.gd" id="2_nh58i"]
+[ext_resource type="Script" path="res://Scripts/Piece.gd" id="4_558d8"]
+[ext_resource type="Texture2D" uid="uid://b2cinqvg0ryt2" path="res://Assets/placeholder/Pieces/5.png" id="4_5872d"]
+[ext_resource type="Texture2D" uid="uid://bmk3upu405ob" path="res://Assets/placeholder/Pieces/1.png" id="6_breij"]
+[ext_resource type="Texture2D" uid="uid://csdki2m1w8hyv" path="res://Assets/placeholder/Pieces/0.png" id="6_m8eyx"]
+[ext_resource type="Texture2D" uid="uid://b5lbt03dqbe83" path="res://Assets/placeholder/Pieces/2.png" id="7_ouyqu"]
+[ext_resource type="Texture2D" uid="uid://cwuf3ixxgsm3w" path="res://Assets/placeholder/Pieces/3.png" id="8_bl0is"]
+[ext_resource type="Texture2D" uid="uid://s32rdfod0lbe" path="res://Assets/placeholder/Pieces/4.png" id="9_42k8v"]
+[ext_resource type="Texture2D" uid="uid://bfjkmtlfcohuy" path="res://Assets/placeholder/Pieces/6.png" id="11_qy8t0"]
+[ext_resource type="Texture2D" uid="uid://dk3ax31ffv6uo" path="res://Assets/placeholder/Pieces/7.png" id="12_fixx3"]
+[ext_resource type="Texture2D" uid="uid://bwejq1ixpdrbp" path="res://Assets/placeholder/Pieces/8.png" id="13_agpj3"]
+
+[node name="GameplayScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("grid")]
+script = ExtResource("1_mkdt3")
+grid = NodePath("../Grid")
+held_piece_flat_speed = 1.0
+held_piece_distance_speed = 15.0
+held_piece_settle_delay = 0.35
+held_piece_settle_animation_duration = 0.25
+
+[node name="Label" type="Label" parent="."]
+offset_left = 488.0
+offset_top = 20.0
+offset_right = 817.0
+offset_bottom = 79.0
+text = "Click+Hold to move pieces
+A or D while holding piece to rotate"
+
+[node name="Grid" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 40.0
+offset_right = 960.0
+offset_bottom = 680.0
+texture = ExtResource("1_55sjd")
+stretch_mode = 1
+script = ExtResource("2_nh58i")
+
+[node name="0" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 35.0
+offset_top = 40.0
+offset_right = 99.0
+offset_bottom = 104.0
+pivot_offset = Vector2(32, 32)
+texture = ExtResource("6_m8eyx")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(0, 0)])
+
+[node name="1" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 140.0
+offset_top = 128.0
+offset_right = 268.0
+offset_bottom = 256.0
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("6_breij")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)])
+
+[node name="2" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 30.0
+offset_top = 242.0
+offset_right = 158.0
+offset_bottom = 370.0
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("7_ouyqu")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 1)])
+
+[node name="3" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 142.0
+offset_top = 332.0
+offset_right = 270.0
+offset_bottom = 460.0
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("8_bl0is")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)])
+
+[node name="4" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 28.0
+offset_top = 415.0
+offset_right = 92.0
+offset_bottom = 607.0
+pivot_offset = Vector2(32, 96)
+texture = ExtResource("9_42k8v")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2)])
+
+[node name="5" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 137.0
+offset_top = 490.0
+offset_right = 265.0
+offset_bottom = 682.0
+pivot_offset = Vector2(64, 96)
+texture = ExtResource("4_5872d")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2)])
+
+[node name="6" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 1024.0
+offset_top = 53.0
+offset_right = 1216.0
+offset_bottom = 245.0
+pivot_offset = Vector2(96, 96)
+texture = ExtResource("11_qy8t0")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(0, 2)])
+
+[node name="7" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 1023.0
+offset_top = 269.0
+offset_right = 1215.0
+offset_bottom = 461.0
+pivot_offset = Vector2(96, 96)
+texture = ExtResource("12_fixx3")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2)])
+
+[node name="8" type="TextureRect" parent="."]
+texture_repeat = 1
+layout_mode = 0
+offset_left = 1024.0
+offset_top = 496.0
+offset_right = 1152.0
+offset_bottom = 688.0
+pivot_offset = Vector2(64, 96)
+texture = ExtResource("13_agpj3")
+stretch_mode = 5
+script = ExtResource("4_558d8")
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(1, 2)])
