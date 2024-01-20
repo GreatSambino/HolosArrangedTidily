@@ -1,0 +1,183 @@
+[gd_scene load_steps=3 format=3 uid="uid://rd7f48tsnqx7"]
+
+[ext_resource type="Script" path="res://Scripts/SettingsWindow.gd" id="1_lqpgi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tcb1o"]
+bg_color = Color(0.25098, 0.25098, 0.25098, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="SettingsWindow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lqpgi")
+
+[node name="BackgroundDarken" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.752941)
+
+[node name="SettingsPanel" type="Panel" parent="BackgroundDarken"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -320.0
+offset_right = 320.0
+offset_bottom = 320.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tcb1o")
+
+[node name="SettingsLabel" type="Label" parent="BackgroundDarken/SettingsPanel"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 640.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "Settings"
+
+[node name="BackButton" type="Button" parent="BackgroundDarken/SettingsPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -128.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 48.0
+grow_horizontal = 0
+text = "Back"
+
+[node name="SettingsItemsContainer" type="VBoxContainer" parent="BackgroundDarken/SettingsPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 80.0
+offset_right = -16.0
+grow_horizontal = 2
+theme_override_constants/separation = 24
+
+[node name="DisplayModeContainer" type="VBoxContainer" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DisplayModeLabel" type="Label" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/DisplayModeContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Display Mode"
+
+[node name="DisplayModeOptionsButton" type="OptionButton" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/DisplayModeContainer"]
+custom_minimum_size = Vector2(320, 48)
+layout_mode = 2
+item_count = 3
+selected = 0
+popup/item_0/text = "Fullscreen"
+popup/item_0/id = 0
+popup/item_1/text = "Fullscreen Exclusive"
+popup/item_1/id = 1
+popup/item_2/text = "Window"
+popup/item_2/id = 2
+
+[node name="WindowSizeContainer" type="VBoxContainer" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="WindowSizeLabel" type="Label" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/WindowSizeContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Window Size"
+
+[node name="WindowSizeOptionButton" type="OptionButton" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/WindowSizeContainer"]
+custom_minimum_size = Vector2(320, 48)
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "1920x1080"
+popup/item_0/id = 0
+popup/item_1/text = "1600x900"
+popup/item_1/id = 1
+popup/item_2/text = "1366x768"
+popup/item_2/id = 2
+popup/item_3/text = "1280x720"
+popup/item_3/id = 3
+
+[node name="MasterVolumeContainer" type="VBoxContainer" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="MasterVolumeLabel" type="Label" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/MasterVolumeContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Master Volume"
+
+[node name="MasterVolumeSlider" type="HSlider" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/MasterVolumeContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.75
+
+[node name="SoundEffectsContainer" type="VBoxContainer" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SoundEffectsLabel" type="Label" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/SoundEffectsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Sound Effects"
+
+[node name="SoundEffectsSlider" type="HSlider" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/SoundEffectsContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.75
+
+[node name="MusicContainer" type="VBoxContainer" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="MusicLabel" type="Label" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/MusicContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/MusicContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.75
+
+[node name="FaunaNoisesContainer" type="VBoxContainer" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FaunaNoisesLabel" type="Label" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/FaunaNoisesContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Fauna Noises"
+
+[node name="FaunaNoisesSlider" type="HSlider" parent="BackgroundDarken/SettingsPanel/SettingsItemsContainer/FaunaNoisesContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.75

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bf5m1p77xbaro"]
+
+[ext_resource type="Texture2D" uid="uid://5kw5u2yrnslb" path="res://Assets/placeholder/Grid.png" id="1_15tko"]
+
+[node name="GridCell" type="TextureRect"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_15tko")

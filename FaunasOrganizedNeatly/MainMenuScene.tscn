@@ -1,0 +1,210 @@
+[gd_scene load_steps=7 format=3 uid="uid://dnmh5eg37e6gj"]
+
+[ext_resource type="Texture2D" uid="uid://dk2tcbsslchnp" path="res://Assets/placeholder/UI/OptionsIcon.png" id="1_l4fbg"]
+[ext_resource type="PackedScene" uid="uid://rd7f48tsnqx7" path="res://SettingsWindow.tscn" id="2_8pbmp"]
+[ext_resource type="Script" path="res://Scripts/ExitButton.gd" id="2_ispa3"]
+[ext_resource type="Script" path="res://Scripts/LevelTypeButton.gd" id="3_yotar"]
+[ext_resource type="Script" path="res://Scripts/MenuChangeButton.gd" id="4_ba6rm"]
+[ext_resource type="Script" path="res://Scripts/LevelSelectMenu.gd" id="5_tyal6"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 64.0
+offset_bottom = 256.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Fauna Birthday 2024
+(Faunas Organized Neatly)"
+horizontal_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -72.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 72.0
+grow_horizontal = 0
+icon = ExtResource("1_l4fbg")
+icon_alignment = 1
+expand_icon = true
+
+[node name="MainMenuButtons" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -128.0
+offset_top = 512.0
+offset_right = 128.0
+offset_bottom = 1024.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="PlayButton" type="Button" parent="MainMenuButtons" node_paths=PackedStringArray("deactivate_menu", "activate_menu")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Play"
+script = ExtResource("4_ba6rm")
+deactivate_menu = NodePath("..")
+activate_menu = NodePath("../../LevelTypeMenu")
+
+[node name="GalleryButton" type="Button" parent="MainMenuButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Gallery"
+
+[node name="TutorialButton" type="Button" parent="MainMenuButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Tutorial"
+
+[node name="CreditsButton" type="Button" parent="MainMenuButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Credits"
+
+[node name="ExitButton" type="Button" parent="MainMenuButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Exit"
+script = ExtResource("2_ispa3")
+
+[node name="LevelTypeMenu" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LevelTypes" type="HBoxContainer" parent="LevelTypeMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 384.0
+offset_right = 400.0
+offset_bottom = 784.0
+grow_horizontal = 2
+theme_override_constants/separation = 32
+
+[node name="CampaignButton" type="Button" parent="LevelTypeMenu/LevelTypes" node_paths=PackedStringArray("level_type_menu", "level_select_menu")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 48
+text = "Campaign"
+script = ExtResource("3_yotar")
+level_type_menu = NodePath("../..")
+level_select_menu = NodePath("../../../LevelSelectMenu")
+
+[node name="SaplingSubmissionsButton" type="Button" parent="LevelTypeMenu/LevelTypes" node_paths=PackedStringArray("level_type_menu", "level_select_menu")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 48
+disabled = true
+text = "Sapling
+Submissions"
+script = ExtResource("3_yotar")
+level_type = 1
+level_type_menu = NodePath("../..")
+level_select_menu = NodePath("../../../LevelSelectMenu")
+
+[node name="BackButton" type="Button" parent="LevelTypeMenu" node_paths=PackedStringArray("deactivate_menu", "activate_menu")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -160.0
+offset_right = 128.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Back"
+script = ExtResource("4_ba6rm")
+deactivate_menu = NodePath("..")
+activate_menu = NodePath("../../MainMenuButtons")
+
+[node name="LevelSelectMenu" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_tyal6")
+
+[node name="LevelSelectLabel" type="Label" parent="LevelSelectMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -256.0
+offset_top = 288.0
+offset_right = 256.0
+offset_bottom = 288.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 48
+text = "Level Select - <Type>"
+horizontal_alignment = 1
+
+[node name="LevelGrid" type="GridContainer" parent="LevelSelectMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 416.0
+offset_bottom = 416.0
+grow_horizontal = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 10
+
+[node name="BackButton" type="Button" parent="LevelSelectMenu" node_paths=PackedStringArray("deactivate_menu", "activate_menu")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -160.0
+offset_right = 128.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Back"
+script = ExtResource("4_ba6rm")
+deactivate_menu = NodePath("..")
+activate_menu = NodePath("../../LevelTypeMenu")
+
+[node name="SettingsWindow" parent="." instance=ExtResource("2_8pbmp")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="SettingsButton" to="SettingsWindow" method="show_window"]
+[connection signal="pressed" from="MainMenuButtons/ExitButton" to="MainMenuButtons/ExitButton" method="quit"]

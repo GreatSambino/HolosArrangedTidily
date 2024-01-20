@@ -6,11 +6,14 @@ const RETURN_ANIMATION_DURATION: float = 0.5 # Number of seconds a piece takes t
 const ROTATION_ANIMATION_DURATION: float = 0.35 # Number of seconds a piece takes to rotate
 const PLACED_ANIMATION_DURATION: float = 0.2 # Number of seconds a piece take to move into it's placed position
 
+var ghost_color = Color(0.5, 1.0, 0.6, 0.75)
+
 enum RotationStates { DEG_0 = 0, DEG_90, DEG_180, DEG_270 }
 enum PlacementStates { UNPLACED, HELD, PLACED }
 
+@export var id: int # Identifies the type of piece this is
 @export var cells: Array[Vector2i] # The spaces occupied by this piece when unrotated
-@export var center_offset: Vector2 # The 'center' position of the piece, offset from the origin at the top-left
+#@export var center_offset: Vector2 # The 'center' position of the piece, offset from the origin at the top-left
 var _cells_max_x: int # Used for calculating cell positions after rotation
 var _cells_max_y: int # ^
 
@@ -24,15 +27,17 @@ var current_offset: Vector2 # For pieces with equal dimensions this is always th
 # all other occupied spaces can be found by adding _current_cells to this position
 var placed_grid_position: Vector2i
 
-var _return_position: Vector2 # The position this piece returns to when not held or in the grid
+var return_position: Vector2 # Position to return this piece to when dropped without space
 
 var _movement_tween: Tween # Active tween for when this piece is moving to a position (e.g. when placed or returned). Set this to null when the tween is finished
 var _rotation_tween: Tween # Active tween for when this piece is rotating. Set this to null when the tween is finished
 
+var is_ghost: bool # Used by level editor to indicate this piece is a representation of the start position of another piece
+var linked_piece: Piece # Used by the level editor to link a piece on the level grid and it's start position ghost
 
-func _ready():
-	_return_position = position # In the future, this can be set when a level is loaded
-	
+
+## Initializes a newly created piece.
+func initialize():
 	current_placement_state = PlacementStates.UNPLACED
 	
 	# Initialize current cells array to same size as cells array
@@ -51,19 +56,46 @@ func _ready():
 	
 	current_offset = pivot_offset # Get offset from pivot_offset
 
-func _gui_input(event):
+## Sets this piece as a ghost that indicates the start position of a level editor piece
+func set_as_ghost(ghost_of: Piece):
+	is_ghost = true
+	linked_piece = ghost_of
+	self_modulate = ghost_color
+
+func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			print("Piece texture clicked")
-			# The texture rect of this piece has been clicked on, but not necessarily the piece's exact shape
 			if _check_shape_clicked():
-				print("Piece shape clicked")
+				print("Piece " + name + " shape clicked")
 				on_clicked()
 
-func _check_shape_clicked() -> bool:
+## Gets the origin (top-left) position of the piece in it's current rotation
+func get_shape_origin() -> Vector2:
 	var shape_origin = position
 	shape_origin += pivot_offset
 	shape_origin -= current_offset
+	return shape_origin
+
+func set_shape_origin_position(new_position: Vector2):
+	global_position = new_position + (current_offset - pivot_offset)
+
+## Gets the dimensions of the piece in it's current rotation
+func get_shape_dimensions() -> Vector2:
+	if _current_rotation_state == RotationStates.DEG_0 or _current_rotation_state == RotationStates.DEG_180:
+		return Vector2(_cells_max_x + 1, _cells_max_y + 1) * Grid.texture_size
+	else:
+		return Vector2(_cells_max_y + 1, _cells_max_x + 1) * Grid.texture_size
+
+## Returns an array of all cells currently occupied by this piece (assumes the piece has been placed in the grid)
+func get_occupied_cells() -> Array[Vector2i]:
+	var occupied_cells: Array[Vector2i] = []
+	for current_cell in _current_cells:
+		var final_cell = placed_grid_position + current_cell
+		occupied_cells.append(final_cell)
+	return occupied_cells
+
+func _check_shape_clicked() -> bool:
+	var shape_origin = get_shape_origin()
 	var mouse_position = get_viewport().get_mouse_position()
 	var relative_click_position = mouse_position - shape_origin
 	for i in range(_current_cells.size()):
@@ -71,17 +103,12 @@ func _check_shape_clicked() -> bool:
 		var cell11 = _current_cells[i] * Grid.texture_size + Vector2(Grid.texture_size, Grid.texture_size)
 		if relative_click_position.x >= cell00.x and relative_click_position.x <= cell11.x and relative_click_position.y >= cell00.y and relative_click_position.y < cell11.y: # I really wish gdscript let you break statements across lines
 			return true # Mouse is inside one of the piece's cells
-			
+	# Mouse is not within the shape of the piece
 	return false
 
-#func _process(delta):
-	#print(position)
-
 func on_clicked():
-	var game_manager: GameManager = get_node("/root/GameplayScene/GameManager")
-	if game_manager == null:
-		return # This should never happen, but just in case
-	game_manager.on_piece_clicked(self)
+	var game_manager: GameManager = get_node("/root/RootNode/GameManager")
+	game_manager.hold_piece(self)
 
 func on_piece_held():
 	current_placement_state = PlacementStates.HELD
@@ -103,6 +130,14 @@ func update_current_cells():
 		RotationStates.DEG_270: # Ascending x -> Descending y | Ascending y -> Ascending x
 			for i in range(cells.size()):
 				_current_cells[i] = Vector2i(cells[i].y, _cells_max_x - cells[i].x)
+
+## Sets the piece rotation and updates it visually immediately.
+func set_piece_rotation(new_rotation: RotationStates):
+	_current_rotation_state = new_rotation
+	update_current_cells()
+	_rotate_offset()
+	rotation = new_rotation * PI * 0.5
+	_current_angle_target = new_rotation * PI * 0.5
 
 func rotate_clockwise():
 	# Update rotation variables
@@ -150,7 +185,7 @@ func _start_rotation_tween():
 
 func return_piece():
 	current_placement_state = PlacementStates.UNPLACED
-	movement_tween_to(_return_position, RETURN_ANIMATION_DURATION)
+	movement_tween_to(return_position, RETURN_ANIMATION_DURATION)
 
 func movement_tween_to(move_to: Vector2, duration: float):
 	cancel_movement_tween()
@@ -169,6 +204,13 @@ func cancel_rotation_tween():
 	if _rotation_tween != null:
 		_rotation_tween.stop()
 	_rotation_tween = null
+
+## Highlight a piece to show it's link to a level editor ghost piece
+func set_link_highlight(show_highlight: bool):
+	if show_highlight:
+		self_modulate = ghost_color
+	else:
+		self_modulate = Color.WHITE
 
 func place_piece(grid_position: Vector2i, move_to: Vector2):
 	placed_grid_position = grid_position
