@@ -1,0 +1,306 @@
+[gd_scene load_steps=10 format=3 uid="uid://thx42ebn4coc"]
+
+[ext_resource type="Script" path="res://Scripts/MainMenu.gd" id="1_2u0gs"]
+[ext_resource type="Texture2D" uid="uid://c8m773x1jnf3y" path="res://Art/placeholder/UI/ExitIcon.png" id="2_fg6xf"]
+[ext_resource type="Texture2D" uid="uid://dk2tcbsslchnp" path="res://Art/placeholder/UI/OptionsIcon.png" id="3_p44wl"]
+[ext_resource type="Script" path="res://Scripts/MenuChangeButton.gd" id="4_4mfs7"]
+[ext_resource type="Script" path="res://Scripts/LevelSelectMenu.gd" id="5_5ix2u"]
+[ext_resource type="Script" path="res://Scripts/SwapSceneButton.gd" id="5_luuye"]
+[ext_resource type="Script" path="res://Scripts/CustomLevelPacksFolderButton.gd" id="6_bvh8e"]
+[ext_resource type="PackedScene" uid="uid://rd7f48tsnqx7" path="res://Scenes/UI/settings_window.tscn" id="7_gxk62"]
+[ext_resource type="PackedScene" uid="uid://dj7j47xc1dl2t" path="res://Scenes/UI/exit_confirmation_window.tscn" id="8_mrn25"]
+
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("main_menu_buttons", "level_select_menu")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_2u0gs")
+main_menu_buttons = NodePath("MainMenuButtons")
+level_select_menu = NodePath("LevelSelectMenu")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 64.0
+offset_bottom = 256.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Faunas Organized Neatly"
+horizontal_alignment = 1
+
+[node name="QuickButtons" type="HBoxContainer" parent="."]
+layout_direction = 3
+layout_mode = 1
+anchors_preset = -1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 256.0
+offset_bottom = 72.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ExitButton" type="Button" parent="QuickButtons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+icon = ExtResource("2_fg6xf")
+icon_alignment = 1
+expand_icon = true
+
+[node name="SettingsButton" type="Button" parent="QuickButtons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+icon = ExtResource("3_p44wl")
+icon_alignment = 1
+expand_icon = true
+
+[node name="MainMenuButtons" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -128.0
+offset_top = 448.0
+offset_right = 128.0
+offset_bottom = 1024.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="PlayButton" type="Button" parent="MainMenuButtons" node_paths=PackedStringArray("deactivate_menu", "activate_menu")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Play"
+script = ExtResource("4_4mfs7")
+deactivate_menu = NodePath("..")
+activate_menu = NodePath("../../LevelSelectMenu")
+
+[node name="GalleryButton" type="Button" parent="MainMenuButtons" node_paths=PackedStringArray("old_scene")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Gallery"
+script = ExtResource("5_luuye")
+new_scene_path = "res://Scenes/gallery_scene.tscn"
+old_scene = NodePath("../..")
+
+[node name="LevelEditorButton" type="Button" parent="MainMenuButtons" node_paths=PackedStringArray("old_scene")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Level Editor"
+script = ExtResource("5_luuye")
+new_scene_path = "res://Scenes/level_editor_scene.tscn"
+old_scene = NodePath("../..")
+
+[node name="TutorialButton" type="Button" parent="MainMenuButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Tutorial"
+
+[node name="CreditsButton" type="Button" parent="MainMenuButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Credits"
+
+[node name="LevelSelectMenu" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_5ix2u")
+
+[node name="PackSelection" type="Control" parent="LevelSelectMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="LevelSelectMenu/PackSelection"]
+custom_minimum_size = Vector2(1024, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -512.0
+offset_top = -297.0
+offset_right = 512.0
+offset_bottom = 297.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="LevelSelectMenu/PackSelection/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CampaignLabel" type="Label" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Campaign Level Packs"
+horizontal_alignment = 1
+
+[node name="CampaignScrollContainer" type="ScrollContainer" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+size_flags_vertical = 2
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer/CampaignScrollContainer"]
+custom_minimum_size = Vector2(0, 198)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CustomLabel" type="Label" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Custom Level Packs"
+horizontal_alignment = 1
+
+[node name="OpenFolderButton" type="Button" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Open Folder"
+script = ExtResource("6_bvh8e")
+
+[node name="CustomScrollContainer" type="ScrollContainer" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+size_flags_vertical = 2
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LevelSelectMenu/PackSelection/PanelContainer/MarginContainer/VBoxContainer/CustomScrollContainer"]
+custom_minimum_size = Vector2(0, 198)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="BackButton" type="Button" parent="LevelSelectMenu/PackSelection" node_paths=PackedStringArray("deactivate_menu", "activate_menu")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -160.0
+offset_right = 128.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Back"
+script = ExtResource("4_4mfs7")
+deactivate_menu = NodePath("../..")
+activate_menu = NodePath("../../../MainMenuButtons")
+
+[node name="NumberSelection" type="Control" parent="LevelSelectMenu"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="LevelSelectMenu/NumberSelection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="LevelSelectMenu/NumberSelection/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LevelSelectMenu/NumberSelection/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 12
+
+[node name="PackNameLabel" type="Label" parent="LevelSelectMenu/NumberSelection/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
+text = "Campaign - #1"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="LevelSelectMenu/NumberSelection/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 10
+
+[node name="BackButton" type="Button" parent="LevelSelectMenu/NumberSelection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -160.0
+offset_right = 128.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Back"
+
+[node name="SettingsWindow" parent="." instance=ExtResource("7_gxk62")]
+visible = false
+layout_mode = 1
+
+[node name="ExitConfirmationWindow" parent="." instance=ExtResource("8_mrn25")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="QuickButtons/ExitButton" to="ExitConfirmationWindow" method="set_visible" binds= [true]]
+[connection signal="pressed" from="QuickButtons/SettingsButton" to="SettingsWindow" method="show_window"]
+[connection signal="pressed" from="MainMenuButtons/PlayButton" to="LevelSelectMenu" method="open_pack_select_menu"]
+[connection signal="pressed" from="MainMenuButtons/PlayButton" to="MainMenuButtons" method="set_visible" binds= [false]]
+[connection signal="pressed" from="MainMenuButtons/GalleryButton" to="MainMenuButtons/GalleryButton" method="set_return_menu" binds= [0]]
+[connection signal="pressed" from="MainMenuButtons/LevelEditorButton" to="MainMenuButtons/LevelEditorButton" method="set_return_menu" binds= [0]]
+[connection signal="pressed" from="LevelSelectMenu/NumberSelection/BackButton" to="LevelSelectMenu" method="open_pack_select_menu"]

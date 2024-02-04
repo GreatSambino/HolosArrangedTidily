@@ -1,13 +1,22 @@
+class_name PieceSelectorButton
 extends Button
 
 
-@export var piece_id: int
+signal piece_selected(piece_id: String, create_position: Vector2)
 
 
-func _ready():
-	button_down.connect(on_button_down)
+var _piece: Piece
 
-func on_button_down():
-	var level_editor: LevelEditor = get_node("/root/RootNode/LevelEditor")
-	var centre_position: Vector2 = get_node("PieceTexture").global_position
-	level_editor.on_piece_selector_button_pressed(piece_id, centre_position)
+
+func initialize(piece_id: String):
+	button_down.connect(_on_button_down)
+	_piece = PieceManager.loaded_pieces[piece_id].instantiate()
+	_piece.id = piece_id
+	add_child(_piece)
+	_piece.position = size * 0.5 - _piece.pivot_offset
+	_piece.process_mode = Node.PROCESS_MODE_DISABLED
+	_piece.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _on_button_down():
+	piece_selected.emit(_piece.id, _piece.global_position)

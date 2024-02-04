@@ -3,36 +3,57 @@ extends Node
 
 
 @export var game_manager: GameManager
-@export var piece_manager: PieceManager
 @export var grid: Grid
+@export var piece_selector_button_container: Container
 @export var piece_starting_areas: Array[Panel]
-@export var filename_text_edit: TextEdit
-@export var save_level_output_label: Label
+@export var level_title_line_edit: LineEdit
+@export var author_line_edit: LineEdit
+@export var pack_name_line_edit: LineEdit
+@export var level_number_spin_box: SpinBox
+@export var error_label: Label
 
 var grid_pieces: Dictionary
 
-enum States { EDIT_PIECES, EDIT_BLOCKERS }
-
-var current_state: States
-
 
 func _ready():
-	current_state = States.EDIT_PIECES
 	game_manager.piece_picked_up.connect(on_piece_picked_up)
 	game_manager.piece_placed_in_grid.connect(on_piece_placed_in_grid)
 	game_manager.piece_dropped_without_grid.connect(on_piece_dropped_without_grid)
 	grid_pieces = {}
-	grid.set_grid_size(Vector2i(10, 10))
+	grid.set_grid_size(Vector2i(12, 12))
+	create_piece_selector_buttons()
+
+
+func create_piece_selector_buttons():
+	var button_packed_scene = load("res://Scenes/UI/piece_selector_button.tscn")
+	for piece_id in PieceManager.loaded_pieces:
+		var new_button: PieceSelectorButton = button_packed_scene.instantiate()
+		piece_selector_button_container.add_child(new_button)
+		new_button.initialize(piece_id)
+		new_button.piece_selected.connect(on_piece_selected)
+
+
+func _process(delta):
+	if Input.is_action_just_pressed("LevelEditorMoveUp"):
+		move_all_pieces(Vector2i(0, -1))
+	if Input.is_action_just_pressed("LevelEditorMoveLeft"):
+		move_all_pieces(Vector2i(-1, 0))
+	if Input.is_action_just_pressed("LevelEditorMoveDown"):
+		move_all_pieces(Vector2i(0, 1))
+	if Input.is_action_just_pressed("LevelEditorMoveRight"):
+		move_all_pieces(Vector2i(1, 0))
+
 
 func on_save_level_button():
+	error_label.text = ""
 	# Make sure the puzzle has at least One Piece (The One Piece is reeeeal)
 	if grid_pieces.is_empty():
-		save_level_output_label.text = "Cannot save level with no pieces"
+		error_label.text = "Cannot save level with no pieces"
 		return
-	# Remove unwanted characters from the filename and make sure the resulting filename is more than zero length
-	var sanitized_filename = sanitize_filename(filename_text_edit.text)
-	if sanitized_filename == "":
-		save_level_output_label.text = "Please enter a valid filename"
+	# Remove unwanted characters from the pack name (which is used as the directory for saved levels)
+	var sanitized_directory_name = sanitize_directory_name(pack_name_line_edit.text)
+	if sanitized_directory_name == "":
+		error_label.text = "Please enter a valid pack name"
 		return
 	
 	# Find all cells that are occupied by pieces
@@ -75,8 +96,19 @@ func on_save_level_button():
 				unused_cells[cell] = true
 				print("Unused cell: " + str(cell))
 	
-	var path: String = OS.get_user_data_dir() + "/" + sanitized_filename + LevelManager.level_file_extension
+	# Create the save directory if it doesn't exist
+	if not DirAccess.dir_exists_absolute(LevelManager.custom_level_packs_directory_path):
+		DirAccess.make_dir_absolute(LevelManager.custom_level_packs_directory_path)
+	if not DirAccess.dir_exists_absolute(LevelManager.custom_level_packs_directory_path + "/" + sanitized_directory_name):
+		DirAccess.make_dir_absolute(LevelManager.custom_level_packs_directory_path + "/" + sanitized_directory_name)
+	
+	var path: String = LevelManager.custom_level_packs_directory_path + "/" + sanitized_directory_name + "/" + str(level_number_spin_box.value) + LevelManager.level_file_extension
 	var file = FileAccess.open(path, FileAccess.WRITE)
+	# Save the level file version
+	file.store_16(LevelManager.application_level_file_version)
+	# Save level title and author
+	file.store_pascal_string(level_title_line_edit.text)
+	file.store_pascal_string(author_line_edit.text)
 	# Save grid size to file
 	file.store_8(level_grid_size.x)
 	file.store_8(level_grid_size.y)
@@ -88,7 +120,7 @@ func on_save_level_button():
 	# Save grid pieces (ID, grid position, and rotation) and their linked ghost piece (starting position, rotation)
 	file.store_16(grid_pieces.size()) # Store the count of pieces in the level
 	for grid_piece: Piece in grid_pieces:
-		file.store_8(grid_piece.id)
+		file.store_pascal_string(grid_piece.id)
 		var adjusted_grid_position = grid_piece.placed_grid_position - grid_xy0 # Find the origin position of the piece in the min-size solution grid
 		file.store_8(adjusted_grid_position.x)
 		file.store_8(adjusted_grid_position.y)
@@ -97,30 +129,69 @@ func on_save_level_button():
 		file.store_float(linked_piece_relative_position.x)
 		file.store_float(linked_piece_relative_position.y)
 		file.store_8(grid_piece.linked_piece._current_rotation_state)
-		
-	print("Saved to " + path)
-	save_level_output_label.text = "Saved to " + path
+	file.close()
+	
+	print("Level saved to " + path)
+	
+	OS.shell_show_in_file_manager(path)
 
-func on_piece_selector_button_pressed(piece_id: int, piece_position: Vector2):
-	var grid_piece: Piece = piece_manager.instantiate_piece(piece_id)
-	grid_piece.initialize()
+
+func on_open_level_button():
+	error_label.text = ""
+	# Remove unwanted characters from the pack name (which is used as the directory for saved levels)
+	var sanitized_directory_name = sanitize_directory_name(pack_name_line_edit.text)
+	if sanitized_directory_name == "":
+		error_label.text = "Please enter a valid pack name"
+		return
+	var path: String = OS.get_user_data_dir() + "/CustomLevelPacks/" + sanitized_directory_name + "/" + str(level_number_spin_box.value) + LevelManager.level_file_extension
+	if not FileAccess.file_exists(path):
+		error_label.text = "File not found"
+		return
+	# Clear old level
+	grid_pieces.clear()
+	game_manager.reset_level_state()
+	# Load new level
+	LevelManager.load_level_data_from_file(path)
+	level_title_line_edit.text = LevelManager.level_title
+	author_line_edit.text = LevelManager.author_name
+	for i in range(LevelManager.piece_count):
+		var grid_piece = game_manager.instantiate_piece(LevelManager.piece_id[i])
+		var ghost_piece = game_manager.instantiate_piece(LevelManager.piece_id[i])
+		grid_piece.set_piece_rotation(LevelManager.piece_rotation_state[i])
+		game_manager.occupy_cells(grid_piece, LevelManager.piece_grid_origin[i])
+		grid_piece.place_piece(LevelManager.piece_grid_origin[i], game_manager.get_piece_placed_position(grid_piece, LevelManager.piece_grid_origin[i]), true)
+		grid_piece.linked_piece = ghost_piece
+		grid_pieces[grid_piece] = true
+		ghost_piece.set_piece_rotation(LevelManager.piece_start_rotation[i])
+		ghost_piece.position = grid.get_grid_center() + LevelManager.piece_start_position_offset[i]
+		ghost_piece.return_position = ghost_piece.position
+		ghost_piece.set_as_ghost(grid_piece)
+
+
+func on_piece_selected(piece_id: String, piece_position: Vector2):
+	var grid_piece: Piece = game_manager.instantiate_piece(piece_id)
 	grid_piece.global_position = piece_position
 	game_manager.hold_piece(grid_piece)
+
 
 func on_piece_picked_up(piece: Piece):
 	if piece.is_ghost:
 		piece.linked_piece.set_link_highlight(true)
+	author_line_edit.release_focus()
+	pack_name_line_edit.release_focus()
+	level_number_spin_box.release_focus()
+
 
 func on_piece_placed_in_grid(piece: Piece):
 	if piece.linked_piece == null:
 		# Newly created piece has been placed into the grid
 		grid_pieces[piece] = true # Add it to the dictionary of pieces in the level
-		var ghost_piece = piece_manager.instantiate_piece(piece.id)
-		ghost_piece.initialize()
+		var ghost_piece = game_manager.instantiate_piece(piece.id)
 		ghost_piece.set_as_ghost(piece)
 		ghost_piece.global_position = piece_starting_areas[0].global_position
 		ghost_piece.return_position = ghost_piece.global_position
 		piece.linked_piece = ghost_piece
+
 
 func on_piece_dropped_without_grid(piece: Piece):
 	# If the piece is a ghost make sure it is placed within a starting area
@@ -135,6 +206,7 @@ func on_piece_dropped_without_grid(piece: Piece):
 		piece.linked_piece.queue_free()
 	piece.queue_free()
 
+
 func is_within_starting_area(piece: Piece) -> bool:
 	var piece_xy0 = piece.get_shape_origin()
 	var piece_xy1 = piece_xy0 + piece.get_shape_dimensions()
@@ -147,8 +219,46 @@ func is_within_starting_area(piece: Piece) -> bool:
 			break
 	return in_area
 
-func sanitize_filename(filename: String) -> String:
+
+func sanitize_directory_name(filename: String) -> String:
 	var sanitized_str = filename.replace("\n", "") # Remove linebreaks from input filename
 	var unwanted_chars_pattern = "[^\\w\\.-_]+" # Only allow letters, numbers, periods, hyphens, and underscores in the filename
 	sanitized_str = sanitized_str.replace(unwanted_chars_pattern, "")
 	return sanitized_str
+
+
+## Moves the position of all pieces on the grid in the given direction if there is space to do so.
+func move_all_pieces(direction: Vector2i):
+	var check_free_cells: Array[Vector2i]
+	if direction.x < 0:
+		direction.x = -1
+		for i in range(grid.height):
+			check_free_cells.append(Vector2i(0, i))
+	elif direction.x > 0:
+		direction.x = 1
+		for i in range(grid.height):
+			check_free_cells.append(Vector2i(grid.width - 1, i))
+	if direction.y < 0:
+		direction.y = -1
+		for i in range(grid.width):
+			check_free_cells.append(Vector2i(i, 0))
+	elif direction.y > 0:
+		direction.y = 1
+		for i in range(grid.width):
+			check_free_cells.append(Vector2i(i, grid.height - 1))
+	
+	for cell in check_free_cells:
+		if game_manager.occupied_grid_cells.has(cell):
+			return
+	
+	for piece: Piece in game_manager.get_children():
+		if piece.is_ghost:
+			continue
+		piece.placed_grid_position += direction
+		piece.position += direction * grid.texture_size
+	
+	var new_occupied_cells = {}
+	for cell in game_manager.occupied_grid_cells:
+		new_occupied_cells[cell + direction] = true
+	
+	game_manager.occupied_grid_cells = new_occupied_cells

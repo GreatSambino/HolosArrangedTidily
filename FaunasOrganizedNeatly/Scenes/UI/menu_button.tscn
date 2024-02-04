@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cet0i5cqtr7kr"]
+
+[ext_resource type="Texture2D" uid="uid://dyq6wwjimit68" path="res://Art/placeholder/UI/MenuIcon.png" id="1_uump2"]
+
+[node name="MenuButton" type="Button"]
+custom_minimum_size = Vector2(64, 64)
+icon = ExtResource("1_uump2")
+icon_alignment = 1
+expand_icon = true

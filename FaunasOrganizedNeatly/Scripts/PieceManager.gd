@@ -1,23 +1,24 @@
-class_name PieceManager
-extends Control
+## Autoload used to load piece scenes and easily instantiate them by ID at runtime.
+## Currently loads all pieces in the res://Pieces folder when the game first runs and keeps them all in memory for the duration of the game.
+# NOTE: In a game with a large number of unique pieces or large artwork file sizes, this may be inefficient.
+# For such a game this class might need to be redesigned to dynamically load/unload only Pieces that are currently needed.
+# However this current implementation should be fine for most games, and there are situations such as the level editor where all pieces are loaded anyhow.
+
+extends Node
 
 
-const max_piece_id: int = 8
+var piece_directory_path = "res://Pieces"
 
-var loaded_pieces: Array[PackedScene] = []
+
+## Key is piece ID string, value is PackedScene that can be instantiated from
+var loaded_pieces: Dictionary
 
 
 func _enter_tree():
-	# Populate the array of piece PackedScenes that can be instantiated from
-	for i in range(max_piece_id + 1):
-		var loaded_piece : PackedScene = load("res://Assets/Pieces/" + str(i) + ".tscn")
-		loaded_pieces.append(loaded_piece)
-
-func instantiate_piece(piece_id: int) -> Piece:
-	var new_piece = loaded_pieces[piece_id].instantiate()
-	add_child(new_piece)
-	return new_piece
-
-func free_all_pieces():
-	for existing_piece in get_children():
-		existing_piece.queue_free()
+	loaded_pieces = {}
+	var piece_filenames = DirAccess.get_files_at(piece_directory_path)
+	for piece_filename in piece_filenames:
+		var id: String = piece_filename.get_slice(".", 0) # Get the part of the filename before the file extension
+		var trimmed_filename = piece_filename.trim_suffix(".remap") # Godot adds a ".remap" suffix to the filename of resources in exported projects, but ResourceLoader.load() still takes the original filename.
+		loaded_pieces[id] = load(piece_directory_path + "/" + trimmed_filename)
+	print("Pieces loaded")

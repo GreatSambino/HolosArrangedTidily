@@ -1,0 +1,404 @@
+[gd_scene load_steps=15 format=3 uid="uid://cd4oqobplctl7"]
+
+[ext_resource type="Script" path="res://Scripts/GameManager.gd" id="1_idgtt"]
+[ext_resource type="Script" path="res://Scripts/LevelEditor.gd" id="2_vp6pi"]
+[ext_resource type="Script" path="res://Scripts/Grid.gd" id="3_usrti"]
+[ext_resource type="Theme" uid="uid://dmpt84s311hf8" path="res://Art/ThemesAndStyles/ui_theme.tres" id="4_m0oy3"]
+[ext_resource type="Texture2D" uid="uid://dyq6wwjimit68" path="res://Art/placeholder/UI/MenuIcon.png" id="7_oktao"]
+[ext_resource type="Texture2D" uid="uid://dk2tcbsslchnp" path="res://Art/placeholder/UI/OptionsIcon.png" id="8_xndvw"]
+[ext_resource type="PackedScene" uid="uid://bacpk3jcn188o" path="res://Scenes/UI/level_editor_exit_confirmation.tscn" id="10_n0uqi"]
+[ext_resource type="PackedScene" uid="uid://rd7f48tsnqx7" path="res://Scenes/UI/settings_window.tscn" id="11_xac4i"]
+[ext_resource type="Script" path="res://Scripts/EditorPanel.gd" id="16_pu63d"]
+[ext_resource type="Theme" uid="uid://cs7r7tnk0mjv8" path="res://Art/ThemesAndStyles/level_editor_panel_buttons_theme.tres" id="17_3a2ek"]
+[ext_resource type="Theme" uid="uid://qsdnkiyyencd" path="res://Art/ThemesAndStyles/level_editor_line_edit_theme.tres" id="18_inxoh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ulwnf"]
+bg_color = Color(0.576471, 0.717647, 0.647059, 0.376471)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0.376471)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_2vath"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ci4tn"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+
+[node name="LevelEditor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LevelEditor" type="Node" parent="." node_paths=PackedStringArray("game_manager", "grid", "piece_selector_button_container", "piece_starting_areas", "level_title_line_edit", "author_line_edit", "pack_name_line_edit", "level_number_spin_box", "error_label")]
+script = ExtResource("2_vp6pi")
+game_manager = NodePath("../GameManager")
+grid = NodePath("../Grid")
+piece_selector_button_container = NodePath("../PieceSelector/HBoxContainer")
+piece_starting_areas = [NodePath("../PieceStartAreaLeft"), NodePath("../PieceStartAreaRight")]
+level_title_line_edit = NodePath("../EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer/LevelTitleVBoxContainer2/LevelTitleLineEdit")
+author_line_edit = NodePath("../EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer/AuthorVBoxContainer/AuthorLineEdit")
+pack_name_line_edit = NodePath("../EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2/PackNameVBoxContainer/PackNameLineEdit")
+level_number_spin_box = NodePath("../EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2/LevelNumberVBoxContainer/LevelNumberSpinBox")
+error_label = NodePath("../EditorPanel/TabContainer/File/ErrorLabel")
+
+[node name="Grid" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 8.0
+offset_right = 1344.0
+offset_bottom = 776.0
+mouse_filter = 2
+script = ExtResource("3_usrti")
+bottom_margin = 296.0
+
+[node name="PieceStartAreaLeft" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 568.0
+offset_bottom = -304.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ulwnf")
+
+[node name="Label" type="Label" parent="PieceStartAreaLeft"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.376471)
+theme_override_font_sizes/font_size = 32
+text = "Piece starting area"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PieceStartAreaRight" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -568.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -304.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ulwnf")
+
+[node name="Label" type="Label" parent="PieceStartAreaRight"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.376471)
+theme_override_font_sizes/font_size = 32
+text = "Piece starting area"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PieceSelector" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -287.0
+offset_right = 1313.0
+offset_bottom = -8.0
+grow_vertical = 0
+theme = ExtResource("4_m0oy3")
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PieceSelector"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="EditorPanel" type="HBoxContainer" parent="." node_paths=PackedStringArray("tab_buttons", "tab_container")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -568.0
+offset_top = -287.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = SubResource("Theme_2vath")
+theme_override_constants/separation = 0
+script = ExtResource("16_pu63d")
+tab_buttons = [NodePath("MarginContainer/VBoxContainer/FileButton"), NodePath("MarginContainer/VBoxContainer/OtherButton")]
+tab_container = NodePath("TabContainer")
+
+[node name="MarginContainer" type="MarginContainer" parent="EditorPanel"]
+custom_minimum_size = Vector2(64, 264.535)
+layout_mode = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EditorPanel/MarginContainer"]
+custom_minimum_size = Vector2(64, 264.535)
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FileButton" type="Button" parent="EditorPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme = ExtResource("17_3a2ek")
+toggle_mode = true
+button_pressed = true
+
+[node name="OtherButton" type="Button" parent="EditorPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme = ExtResource("17_3a2ek")
+toggle_mode = true
+
+[node name="TabContainer" type="TabContainer" parent="EditorPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_2vath")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ci4tn")
+tabs_visible = false
+
+[node name="File" type="MarginContainer" parent="EditorPanel/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EditorPanel/TabContainer/File"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="NamesHBoxContainer" type="HBoxContainer" parent="EditorPanel/TabContainer/File/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="LevelTitleVBoxContainer2" type="VBoxContainer" parent="EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="LevelTitleLabel" type="Label" parent="EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer/LevelTitleVBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.35
+theme_override_font_sizes/font_size = 20
+text = "Level Title"
+
+[node name="LevelTitleLineEdit" type="LineEdit" parent="EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer/LevelTitleVBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("18_inxoh")
+
+[node name="AuthorVBoxContainer" type="VBoxContainer" parent="EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="AuthorLabel" type="Label" parent="EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer/AuthorVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.35
+theme_override_font_sizes/font_size = 20
+text = "Author"
+
+[node name="AuthorLineEdit" type="LineEdit" parent="EditorPanel/TabContainer/File/VBoxContainer/NamesHBoxContainer/AuthorVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("18_inxoh")
+
+[node name="HSeparator" type="HSeparator" parent="EditorPanel/TabContainer/File/VBoxContainer"]
+layout_mode = 2
+
+[node name="FileDetailsHBoxContainer2" type="HBoxContainer" parent="EditorPanel/TabContainer/File/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="PackNameVBoxContainer" type="VBoxContainer" parent="EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PackNameLabel" type="Label" parent="EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2/PackNameVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.35
+theme_override_font_sizes/font_size = 20
+text = "Level Pack Name"
+
+[node name="PackNameLineEdit" type="LineEdit" parent="EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2/PackNameVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("18_inxoh")
+
+[node name="LevelNumberVBoxContainer" type="VBoxContainer" parent="EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LevelNumberLabel" type="Label" parent="EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2/LevelNumberVBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 20
+text = "Level #"
+
+[node name="LevelNumberSpinBox" type="SpinBox" parent="EditorPanel/TabContainer/File/VBoxContainer/FileDetailsHBoxContainer2/LevelNumberVBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+theme = ExtResource("18_inxoh")
+min_value = 1.0
+max_value = 50.0
+value = 1.0
+rounded = true
+
+[node name="ButtonsHBoxContainer" type="HBoxContainer" parent="EditorPanel/TabContainer/File/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+theme_override_constants/separation = 8
+
+[node name="OpenButton" type="Button" parent="EditorPanel/TabContainer/File/VBoxContainer/ButtonsHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Open Level"
+
+[node name="SaveButton" type="Button" parent="EditorPanel/TabContainer/File/VBoxContainer/ButtonsHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Save Level"
+
+[node name="ErrorLabel" type="Label" parent="EditorPanel/TabContainer/File"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+horizontal_alignment = 2
+
+[node name="Other" type="MarginContainer" parent="EditorPanel/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EditorPanel/TabContainer/Other"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="EditorPanel/TabContainer/Other/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorPanel/TabContainer/Other/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.35
+theme_override_font_sizes/font_size = 42
+text = "Editor Options"
+
+[node name="QuickButtons" type="HBoxContainer" parent="EditorPanel/TabContainer/Other/VBoxContainer/HBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ExitButton" type="Button" parent="EditorPanel/TabContainer/Other/VBoxContainer/HBoxContainer/QuickButtons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+icon = ExtResource("7_oktao")
+icon_alignment = 1
+expand_icon = true
+
+[node name="SettingsButton" type="Button" parent="EditorPanel/TabContainer/Other/VBoxContainer/HBoxContainer/QuickButtons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+icon = ExtResource("8_xndvw")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="EditorPanel/TabContainer/Other/VBoxContainer"]
+layout_mode = 2
+text = "Arrow keys - Move all pieces"
+
+[node name="Label2" type="Label" parent="EditorPanel/TabContainer/Other/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "Warning - Saving a level does not currently warn when overwriting an existing level. This will be added soon.
+Some quality of life buttons such as clear level and randomize start rotations to be added here also."
+autowrap_mode = 3
+
+[node name="GameManager" type="Control" parent="." node_paths=PackedStringArray("grid")]
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("1_idgtt")
+current_mode = 1
+grid = NodePath("../Grid")
+held_piece_pickup_duration = 0.1
+held_piece_snap_animation_duration = 0.1
+
+[node name="LevelEditorExitConfirmation" parent="." instance=ExtResource("10_n0uqi")]
+visible = false
+layout_mode = 1
+
+[node name="ExitButton" parent="LevelEditorExitConfirmation/BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" index="0" node_paths=PackedStringArray("old_scene")]
+old_scene = NodePath("../../../../../../..")
+
+[node name="SettingsWindow" parent="." instance=ExtResource("11_xac4i")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="EditorPanel/MarginContainer/VBoxContainer/FileButton" to="EditorPanel" method="tab_button_pressed" binds= [0]]
+[connection signal="pressed" from="EditorPanel/MarginContainer/VBoxContainer/OtherButton" to="EditorPanel" method="tab_button_pressed" binds= [1]]
+[connection signal="button_up" from="EditorPanel/TabContainer/File/VBoxContainer/ButtonsHBoxContainer/OpenButton" to="LevelEditor" method="on_open_level_button"]
+[connection signal="button_up" from="EditorPanel/TabContainer/File/VBoxContainer/ButtonsHBoxContainer/SaveButton" to="LevelEditor" method="on_save_level_button"]
+[connection signal="pressed" from="EditorPanel/TabContainer/Other/VBoxContainer/HBoxContainer/QuickButtons/ExitButton" to="LevelEditorExitConfirmation" method="set_visible" binds= [true]]
+[connection signal="pressed" from="EditorPanel/TabContainer/Other/VBoxContainer/HBoxContainer/QuickButtons/SettingsButton" to="SettingsWindow" method="show_window"]
+
+[editable path="LevelEditorExitConfirmation"]

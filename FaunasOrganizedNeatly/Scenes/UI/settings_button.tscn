@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0wketwc42dig"]
+
+[ext_resource type="Texture2D" uid="uid://dk2tcbsslchnp" path="res://Art/placeholder/UI/OptionsIcon.png" id="1_v0agy"]
+
+[node name="SettingsButton" type="Button"]
+custom_minimum_size = Vector2(64, 64)
+icon = ExtResource("1_v0agy")
+icon_alignment = 1
+expand_icon = true

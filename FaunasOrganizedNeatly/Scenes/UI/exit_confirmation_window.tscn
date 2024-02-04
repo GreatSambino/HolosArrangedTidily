@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=3 uid="uid://dj7j47xc1dl2t"]
+
+[ext_resource type="Script" path="res://Scripts/ExitButton.gd" id="1_74s0d"]
+[ext_resource type="StyleBox" uid="uid://ds87mdj8pdwgb" path="res://Art/ThemesAndStyles/popup_window_panel_stylebox.tres" id="1_rqm7c"]
+
+[node name="ExitConfirmationWindow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackgroundDarken" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.752941)
+
+[node name="PanelContainer" type="PanelContainer" parent="BackgroundDarken"]
+custom_minimum_size = Vector2(512, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_rqm7c")
+
+[node name="MarginContainer" type="MarginContainer" parent="BackgroundDarken/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BackgroundDarken/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Confirm Exit"
+
+[node name="HSeparator" type="HSeparator" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ExitButton" type="Button" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Exit"
+script = ExtResource("1_74s0d")
+
+[node name="CancelButton" type="Button" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Cancel"
+
+[connection signal="pressed" from="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ExitButton" to="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ExitButton" method="quit"]
+[connection signal="pressed" from="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CancelButton" to="." method="set_visible" binds= [false]]

@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://blxsu6bl3jnas"]
+
+[ext_resource type="Texture2D" uid="uid://b5lbt03dqbe83" path="res://Art/placeholder/PieceTextures/2.png" id="1_a6q50"]
+[ext_resource type="Script" path="res://Scripts/Piece.gd" id="2_xxtbl"]
+
+[node name="2" type="TextureRect"]
+texture_repeat = 1
+offset_right = 128.0
+offset_bottom = 128.0
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("1_a6q50")
+stretch_mode = 5
+script = ExtResource("2_xxtbl")
+piece_name = "Test"
+artist_credit = "Test"
+description = "Test"
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 1)])
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="PickedUp" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/PickedUp"]
+bus = &"FaunaNoises"
+
+[node name="Placed" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/Placed"]
+bus = &"FaunaNoises"
+
+[node name="Dropped" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/Dropped"]
+bus = &"FaunaNoises"
+
+[node name="Rotated" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/Rotated"]
+bus = &"FaunaNoises"

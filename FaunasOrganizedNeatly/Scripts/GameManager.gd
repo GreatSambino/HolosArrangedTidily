@@ -1,15 +1,17 @@
+## Manages the manipulation of pieces and the game state flow.
+## Used while playing levels and also the level editor.
+## Pieces created for use in the level are children of this node.
+
+
 class_name GameManager
-extends Node
+extends Control
 
 
 enum Mode { Normal, LevelEditor }
 
-@export var debug_win_label: Label
-
 @export var current_mode: Mode
-@export var piece_manager: PieceManager
 @export var grid: Grid
-@export var pieces_parent: Node
+@export var level_complete_message: LevelCompleteMessage
 
 @export var held_piece_pickup_duration: float # The amount of time taken for a held piece to move from it's placed/snapped position to the cursor
 @export var held_piece_snap_animation_duration: float # The amount of time the held piece takes to move to it's snapped position
@@ -42,10 +44,6 @@ func _ready():
 		create_level()
 
 func _process(delta):
-	# Replace this with returning to the level select menu, and also prompt to confirm quit first
-	if Input.is_action_just_pressed("ui_cancel"):
-		get_tree().quit()
-	
 	if held_piece == null:
 		return
 	
@@ -56,10 +54,7 @@ func _process(delta):
 ## Sets up the level scene based on the data in LevelManager.
 func create_level():
 	# Clear old level
-	piece_manager.free_all_pieces()
-	occupied_grid_cells.clear()
-	blocked_grid_cells.clear()
-	
+	reset_level_state()
 	# Get blocked cells
 	for blocked_cell in LevelManager.unused_cells:
 		blocked_grid_cells[blocked_cell] = true
@@ -68,11 +63,35 @@ func create_level():
 	grid.set_grid_size(LevelManager.grid_size, blocked_grid_cells)
 	# Create pieces
 	for i in range(LevelManager.piece_count):
-		var new_piece = piece_manager.instantiate_piece(LevelManager.piece_id[i])
-		new_piece.initialize()
+		var new_piece = instantiate_piece(LevelManager.piece_id[i])
 		new_piece.set_piece_rotation(LevelManager.piece_start_rotation[i])
 		new_piece.position = grid.get_grid_center() + LevelManager.piece_start_position_offset[i]
 		new_piece.return_position = new_piece.position
+		ProgressManager.set_piece_discovered(LevelManager.piece_id[i])
+
+
+func instantiate_piece(piece_id: String) -> Piece:
+	var new_piece: Piece = PieceManager.loaded_pieces[piece_id].instantiate()
+	add_child(new_piece)
+	new_piece.piece_clicked.connect(hold_piece)
+	new_piece.initialize(piece_id)
+	return new_piece
+
+
+## Resets the level, clearing all existing pieces and grid occupation state
+func reset_level_state():
+	for piece in get_children():
+		piece.queue_free()
+	occupied_grid_cells.clear()
+	blocked_grid_cells.clear()
+
+
+func go_to_next_level():
+	LevelManager.load_level_number += 1
+	LevelManager.load_level_data()
+	create_level()
+	level_complete_message.visible = false
+
 
 func hold_piece(piece: Piece):
 	if held_piece != null:
@@ -82,7 +101,7 @@ func hold_piece(piece: Piece):
 	# Pick up the new held piece, and remove any grid positions it occupies
 	held_piece = piece
 	_remove_occupied_cells(held_piece)
-	pieces_parent.move_child(held_piece, -1) # Move the held piece to the bottom of it's siblings list so that it appears in front
+	move_child(held_piece, -1) # Move the held piece to the bottom of it's siblings list so that it appears in front
 	
 	# Reset movement animations
 	held_piece.cancel_movement_tween()
@@ -125,7 +144,7 @@ func _update_held_piece_snapping():
 	
 	if _held_piece_fits_grid():
 		# If the held piece fits the new position, begin snapping into place
-		var snap_position = _held_piece_placed_position()
+		var snap_position = get_piece_placed_position(held_piece, held_piece_grid_origin)
 		held_piece.movement_tween_to(snap_position, held_piece_snap_animation_duration)
 		held_piece_snapped = true
 	else:
@@ -155,9 +174,9 @@ func _get_held_piece_grid_origin() -> Vector2i:
 	var y = floor(piece_origin_cell_center.y / grid.texture_size)
 	return Vector2i(x, y)
 
-func _held_piece_placed_position() -> Vector2:
-	var placed_position = grid.grid_to_world_position(held_piece_grid_origin)
-	placed_position += (held_piece.current_offset - held_piece.pivot_offset)
+func get_piece_placed_position(piece: Piece, piece_grid_origin: Vector2i) -> Vector2:
+	var placed_position = grid.grid_to_world_position(piece_grid_origin)
+	placed_position += (piece.current_offset - piece.pivot_offset)
 	return placed_position
 
 func _held_piece_fits_grid() -> bool:
@@ -204,13 +223,10 @@ func _do_held_piece_placement():
 	
 	# Place the piece
 	# Add the newly occupied cells to the dictionary
-	for i in range(held_piece._current_cells.size()):
-		var cell_grid_position = held_piece_grid_origin + held_piece._current_cells[i]
-		occupied_grid_cells[cell_grid_position] = true
-		print("Placed cell " + str(cell_grid_position))
+	occupy_cells(held_piece, held_piece_grid_origin)
 	
 	# Find the grid aligned position on screen to move the placed piece to
-	var placed_position = _held_piece_placed_position()
+	var placed_position = get_piece_placed_position(held_piece, held_piece_grid_origin)
 	
 	held_piece.place_piece(held_piece_grid_origin, placed_position)
 	piece_placed_in_grid.emit(held_piece)
@@ -218,7 +234,14 @@ func _do_held_piece_placement():
 	held_piece = null # Piece is no longer being held
 	
 	if current_mode == Mode.Normal and check_win_condition():
-		debug_win_label.text = "Level complete!"
+		ProgressManager.set_current_level_complete()
+		level_complete_message.show_level_complete()
+
+func occupy_cells(placed_piece: Piece, piece_grid_origin: Vector2i):
+	for current_cell in placed_piece._current_cells:
+		var cell_grid_position = piece_grid_origin + current_cell
+		occupied_grid_cells[cell_grid_position] = true
+		print("Placed cell " + str(cell_grid_position))
 
 func check_win_condition() -> bool:
 	return occupied_grid_cells.size() == level_cell_count

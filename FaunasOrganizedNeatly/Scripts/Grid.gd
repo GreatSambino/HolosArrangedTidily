@@ -13,7 +13,8 @@ var height: int
 
 
 func _enter_tree():
-	grid_cell_packed_scene = load("res://Assets/UI/GridCell.tscn")
+	grid_cell_packed_scene = load("res://Scenes/UI/grid_cell.tscn")
+
 
 # Called when the node enters the scene tree for the first time.
 func set_grid_size(new_size: Vector2i, skip_cells: Dictionary = {}):
@@ -39,8 +40,10 @@ func set_grid_size(new_size: Vector2i, skip_cells: Dictionary = {}):
 			new_cell.position = Vector2(x, y) * texture_size
 			new_cell.name = "Cell(" + str(x) + "," + str(y) + ")"
 
+
 func grid_to_world_position(grid_position: Vector2i) -> Vector2:
 	return grid_position * texture_size + position
+
 
 func get_grid_center() -> Vector2:
 	return global_position + Vector2(width, height) * 0.5 * texture_size

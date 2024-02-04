@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://ebojydy62mtf"]
+
+[ext_resource type="Texture2D" uid="uid://bwejq1ixpdrbp" path="res://Art/placeholder/PieceTextures/8.png" id="1_hv0b1"]
+[ext_resource type="Script" path="res://Scripts/Piece.gd" id="2_h6i6a"]
+[ext_resource type="AudioStream" uid="uid://boywmg7bwyjai" path="res://Sound/FaunaNoises/Sneeze01.wav" id="3_nj1mj"]
+[ext_resource type="AudioStream" uid="uid://dcfrv7ixsk04x" path="res://Sound/FaunaNoises/Sneeze02.wav" id="4_d3t8m"]
+
+[node name="8" type="TextureRect"]
+texture_repeat = 1
+offset_right = 128.0
+offset_bottom = 192.0
+pivot_offset = Vector2(64, 96)
+texture = ExtResource("1_hv0b1")
+stretch_mode = 5
+script = ExtResource("2_h6i6a")
+piece_name = "This One Talks"
+artist_credit = "Talking Ben"
+description = "Yes. No. Hohoho. Uuugh."
+cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(1, 2)])
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="PickedUp" type="Node" parent="Sounds"]
+
+[node name="Sneeze01" type="AudioStreamPlayer" parent="Sounds/PickedUp"]
+stream = ExtResource("3_nj1mj")
+bus = &"FaunaNoises"
+
+[node name="Placed" type="Node" parent="Sounds"]
+
+[node name="Sneeze01" type="AudioStreamPlayer" parent="Sounds/Placed"]
+stream = ExtResource("3_nj1mj")
+bus = &"FaunaNoises"
+
+[node name="Dropped" type="Node" parent="Sounds"]
+
+[node name="Sneeze01" type="AudioStreamPlayer" parent="Sounds/Dropped"]
+stream = ExtResource("3_nj1mj")
+bus = &"FaunaNoises"
+
+[node name="Rotated" type="Node" parent="Sounds"]
+
+[node name="Sneeze01" type="AudioStreamPlayer" parent="Sounds/Rotated"]
+stream = ExtResource("3_nj1mj")
+bus = &"FaunaNoises"
+
+[node name="Sneeze02" type="AudioStreamPlayer" parent="Sounds/Rotated"]
+stream = ExtResource("4_d3t8m")
+bus = &"FaunaNoises"

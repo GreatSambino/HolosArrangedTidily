@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=3 uid="uid://bacpk3jcn188o"]
+
+[ext_resource type="StyleBox" uid="uid://ds87mdj8pdwgb" path="res://Art/ThemesAndStyles/popup_window_panel_stylebox.tres" id="1_n505r"]
+[ext_resource type="Script" path="res://Scripts/SwapSceneButton.gd" id="2_vlsy5"]
+
+[node name="LevelEditorExitConfirmation" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackgroundDarken" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.752941)
+
+[node name="PanelContainer" type="PanelContainer" parent="BackgroundDarken"]
+custom_minimum_size = Vector2(512, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_n505r")
+
+[node name="MarginContainer" type="MarginContainer" parent="BackgroundDarken/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BackgroundDarken/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Confirm Exit to Main Menu"
+
+[node name="WarningLabel" type="Label" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "Unsaved changes will not be kept"
+
+[node name="HSeparator" type="HSeparator" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ExitButton" type="Button" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("old_scene")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Exit"
+script = ExtResource("2_vlsy5")
+new_scene_path = "res://Scenes/main_menu_scene.tscn"
+old_scene = NodePath("../../../../../..")
+
+[node name="CancelButton" type="Button" parent="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Cancel"
+
+[connection signal="pressed" from="BackgroundDarken/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CancelButton" to="." method="set_visible" binds= [false]]

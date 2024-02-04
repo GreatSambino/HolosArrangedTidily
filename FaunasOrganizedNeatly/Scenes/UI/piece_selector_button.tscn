@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://c030sd8pkfqe8"]
+
+[ext_resource type="Script" path="res://Scripts/PieceSelectorButton.gd" id="1_cx45f"]
+
+[node name="PieceSelectorButton" type="Button"]
+clip_contents = true
+custom_minimum_size = Vector2(256, 256)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+action_mode = 0
+script = ExtResource("1_cx45f")

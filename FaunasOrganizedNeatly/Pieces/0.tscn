@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnow2nyj7qr8o"]
+
+[ext_resource type="Texture2D" uid="uid://csdki2m1w8hyv" path="res://Art/placeholder/PieceTextures/0.png" id="1_cinw3"]
+[ext_resource type="Script" path="res://Scripts/Piece.gd" id="2_k3b3t"]
+
+[node name="0" type="TextureRect"]
+texture_repeat = 1
+offset_right = 64.0
+offset_bottom = 64.0
+pivot_offset = Vector2(32, 32)
+texture = ExtResource("1_cinw3")
+stretch_mode = 5
+script = ExtResource("2_k3b3t")
+piece_name = "Ye olde 1 by 1"
+artist_credit = "Grungo"
+description = "Truly the most based of placeholder pieces"
+gallery_order = -1
+cells = Array[Vector2i]([Vector2i(0, 0)])
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="PickedUp" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/PickedUp"]
+bus = &"FaunaNoises"
+
+[node name="Placed" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/Placed"]
+bus = &"FaunaNoises"
+
+[node name="Dropped" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/Dropped"]
+bus = &"FaunaNoises"
+
+[node name="Rotated" type="Node" parent="Sounds"]
+
+[node name="<SoundName>" type="AudioStreamPlayer" parent="Sounds/Rotated"]
+bus = &"FaunaNoises"

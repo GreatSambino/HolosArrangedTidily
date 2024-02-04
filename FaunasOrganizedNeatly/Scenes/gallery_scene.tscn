@@ -1,0 +1,153 @@
+[gd_scene load_steps=8 format=3 uid="uid://cc7ik7xx2fbuy"]
+
+[ext_resource type="Script" path="res://Scripts/Gallery.gd" id="1_d7ufj"]
+[ext_resource type="Texture2D" uid="uid://c8m773x1jnf3y" path="res://Art/placeholder/UI/ExitIcon.png" id="2_f1j4f"]
+[ext_resource type="Texture2D" uid="uid://dk2tcbsslchnp" path="res://Art/placeholder/UI/OptionsIcon.png" id="3_q8lyw"]
+[ext_resource type="Script" path="res://Scripts/SwapSceneButton.gd" id="5_0fh1o"]
+[ext_resource type="PackedScene" uid="uid://i1o35cqhku2v" path="res://Scenes/UI/gallery_entry.tscn" id="5_s84m6"]
+[ext_resource type="PackedScene" uid="uid://rd7f48tsnqx7" path="res://Scenes/UI/settings_window.tscn" id="8_ssv4n"]
+[ext_resource type="PackedScene" uid="uid://dj7j47xc1dl2t" path="res://Scenes/UI/exit_confirmation_window.tscn" id="9_yfihx"]
+
+[node name="Gallery" type="Control" node_paths=PackedStringArray("scroll_container", "entry_container", "previous_button", "next_button", "entry_number_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_d7ufj")
+scroll_container = NodePath("VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/ScrollContainer")
+entry_container = NodePath("VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/ScrollContainer/EntryContainer")
+previous_button = NodePath("VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/FooterHBoxContainer/PreviousButton")
+next_button = NodePath("VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/FooterHBoxContainer/NextButton")
+entry_number_label = NodePath("VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/FooterHBoxContainer/EntryNumberLabel")
+scroll_time = 0.5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -512.0
+offset_top = -412.0
+offset_right = 512.0
+offset_bottom = 412.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 32
+
+[node name="GalleryPanel" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(1024, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/GalleryPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/GalleryPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GalleryTitleLabel" type="Label" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Gallery"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(992, 0)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="EntryContainer" type="HBoxContainer" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="GalleryEntry" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/ScrollContainer/EntryContainer" instance=ExtResource("5_s84m6")]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="FooterHBoxContainer" type="HBoxContainer" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PreviousButton" type="Button" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/FooterHBoxContainer"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Previous"
+
+[node name="EntryNumberLabel" type="Label" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/FooterHBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "1 / 1"
+horizontal_alignment = 1
+
+[node name="NextButton" type="Button" parent="VBoxContainer/GalleryPanel/MarginContainer/VBoxContainer/FooterHBoxContainer"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Next"
+
+[node name="BackButton" type="Button" parent="VBoxContainer" node_paths=PackedStringArray("old_scene")]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
+text = "Back"
+script = ExtResource("5_0fh1o")
+new_scene_path = "res://Scenes/main_menu_scene.tscn"
+old_scene = NodePath("../..")
+
+[node name="QuickButtons" type="HBoxContainer" parent="."]
+layout_direction = 3
+layout_mode = 1
+anchors_preset = -1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 256.0
+offset_bottom = 72.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ExitButton" type="Button" parent="QuickButtons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+icon = ExtResource("2_f1j4f")
+icon_alignment = 1
+expand_icon = true
+
+[node name="SettingsButton" type="Button" parent="QuickButtons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+icon = ExtResource("3_q8lyw")
+icon_alignment = 1
+expand_icon = true
+
+[node name="SettingsWindow" parent="." instance=ExtResource("8_ssv4n")]
+visible = false
+layout_mode = 1
+
+[node name="ExitConfirmationWindow" parent="." instance=ExtResource("9_yfihx")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="QuickButtons/ExitButton" to="ExitConfirmationWindow" method="set_visible" binds= [true]]
+[connection signal="pressed" from="QuickButtons/SettingsButton" to="SettingsWindow" method="show_window"]
